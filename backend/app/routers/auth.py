@@ -96,8 +96,8 @@ async def login(
         value=access_token,
         max_age=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60,  # seconds
         httponly=True,  # HttpOnly: JavaScript cannot access
-        secure=False,  # Set to True in production (HTTPS only)
-        samesite="lax",  # CSRF protection
+        secure=settings.cookie_secure,  # Secure in production (HTTPS only)
+        samesite=settings.cookie_samesite,  # CSRF protection
         path="/"
     )
     

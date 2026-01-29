@@ -1,8 +1,11 @@
 /**
  * API Client for FastAPI Backend
  * 
- * Base URL: http://localhost:8000/api/v1
- * All requests include credentials (cookies) for authentication
+ * Centralized API client with error handling and type safety.
+ * All requests include credentials (cookies) for JWT authentication.
+ * 
+ * Base URL: Configured via NEXT_PUBLIC_API_URL environment variable
+ * Default: http://localhost:8000/api/v1
  */
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1'
