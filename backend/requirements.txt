@@ -1,0 +1,23 @@
+# FastAPI và ASGI server
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+
+# Database
+sqlalchemy[asyncio]==2.0.23
+asyncpg==0.29.0  # PostgreSQL async driver
+alembic==1.12.1  # Database migrations
+
+# Authentication
+python-jose[cryptography]==3.3.0
+passlib[bcrypt]==1.7.4
+python-multipart==0.0.6  # Form data parsing
+
+# Environment variables
+pydantic-settings==2.1.0
+
+# Validation
+pydantic==2.5.0
+email-validator==2.1.0
+
+# Utilities
+python-dotenv==1.0.0
