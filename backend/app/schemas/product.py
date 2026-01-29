@@ -48,3 +48,15 @@ class ProductResponse(ProductBase):
 class ProductDetailResponse(ProductResponse):
     """Detailed response schema for product (includes seller info)."""
     seller: Optional[UserResponse] = None
+
+
+class ProductListResponse(BaseModel):
+    """Response schema for paginated product list."""
+    products: list[ProductResponse]
+    total: int = Field(..., description="Total number of products")
+    page: int = Field(..., description="Current page number")
+    limit: int = Field(..., description="Number of items per page")
+    total_pages: int = Field(..., description="Total number of pages")
+    
+    class Config:
+        from_attributes = True

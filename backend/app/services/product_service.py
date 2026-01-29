@@ -2,7 +2,7 @@
 Product service: CRUD operations for products.
 """
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
+from sqlalchemy import select, func
 from fastapi import HTTPException, status
 from decimal import Decimal
 
@@ -14,31 +14,57 @@ from app.schemas.product import ProductCreate, ProductUpdate
 
 async def get_products(
     db: AsyncSession,
-    skip: int = 0,
-    limit: int = 100,
+    page: int = 1,
+    limit: int = 20,
+    keyword: str | None = None,
     category_id: int | None = None
-) -> list[Product]:
+) -> tuple[list[Product], int]:
     """
-    Get list of products with pagination and optional category filter.
+    Get list of products with search, filter, and pagination.
     
     Args:
         db: Database session
-        skip: Number of records to skip
+        page: Page number (1-based)
         limit: Maximum number of records to return
+        keyword: Search keyword for product name (case-insensitive)
         category_id: Optional category filter
         
     Returns:
-        List of products
+        Tuple of (list of products, total count)
     """
+    # Base query
     stmt = select(Product)
+    count_stmt = select(func.count()).select_from(Product)
+    
+    # Apply filters
+    conditions = []
+    
+    if keyword:
+        # Case-insensitive search in product name
+        conditions.append(Product.name.ilike(f"%{keyword}%"))
     
     if category_id:
-        stmt = stmt.where(Product.category_id == category_id)
+        conditions.append(Product.category_id == category_id)
     
-    stmt = stmt.offset(skip).limit(limit).order_by(Product.created_at.desc())
+    # Apply conditions to both queries
+    if conditions:
+        for condition in conditions:
+            stmt = stmt.where(condition)
+            count_stmt = count_stmt.where(condition)
     
+    # Get total count
+    total_result = await db.execute(count_stmt)
+    total = total_result.scalar() or 0
+    
+    # Apply pagination and ordering
+    skip = (page - 1) * limit
+    stmt = stmt.order_by(Product.created_at.desc()).offset(skip).limit(limit)
+    
+    # Execute query
     result = await db.execute(stmt)
-    return result.scalars().all()
+    products = result.scalars().all()
+    
+    return products, total
 
 
 async def get_product_by_id(

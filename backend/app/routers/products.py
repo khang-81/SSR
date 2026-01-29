@@ -12,7 +12,8 @@ from app.schemas.product import (
     ProductCreate,
     ProductUpdate,
     ProductResponse,
-    ProductDetailResponse
+    ProductDetailResponse,
+    ProductListResponse
 )
 from app.services.product_service import (
     get_products,
@@ -30,27 +31,45 @@ router = APIRouter(
 
 @router.get(
     "",
-    response_model=list[ProductResponse],
-    summary="Get list of products",
-    description="Get paginated list of products. Optional category filter."
+    response_model=ProductListResponse,
+    summary="Get list of products with search and filter",
+    description="Get paginated list of products with search by keyword and filter by category."
 )
 async def list_products(
-    skip: int = Query(0, ge=0, description="Number of records to skip"),
-    limit: int = Query(100, ge=1, le=100, description="Maximum number of records to return"),
-    category_id: Optional[int] = Query(None, description="Filter by category ID"),
+    keyword: Optional[str] = Query(None, description="Search keyword for product name"),
+    category: Optional[int] = Query(None, alias="category", description="Filter by category ID"),
+    page: int = Query(1, ge=1, description="Page number (1-based)"),
+    limit: int = Query(20, ge=1, le=100, description="Number of items per page"),
     db: AsyncSession = Depends(get_db)
 ):
     """
-    Get list of products.
+    Get list of products with search, filter, and pagination.
     
-    - **skip**: Number of records to skip (pagination)
-    - **limit**: Maximum number of records (1-100)
-    - **category_id**: Optional category filter
+    - **keyword**: Search keyword for product name (case-insensitive, partial match)
+    - **category**: Filter by category ID
+    - **page**: Page number (starts from 1)
+    - **limit**: Number of items per page (1-100)
     
-    Returns paginated list of products.
+    Returns paginated list of products with pagination metadata.
     """
-    products = await get_products(db, skip=skip, limit=limit, category_id=category_id)
-    return products
+    products, total = await get_products(
+        db,
+        page=page,
+        limit=limit,
+        keyword=keyword,
+        category_id=category
+    )
+    
+    # Calculate total pages
+    total_pages = (total + limit - 1) // limit if total > 0 else 0
+    
+    return ProductListResponse(
+        products=products,
+        total=total,
+        page=page,
+        limit=limit,
+        total_pages=total_pages
+    )
 
 
 @router.get(

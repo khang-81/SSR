@@ -94,9 +94,14 @@ backend/
   - Returns: Current user information
 
 ### Products
-- `GET /api/v1/products` - Lấy danh sách sản phẩm (public)
-  - Query params: `skip`, `limit`, `category_id` (optional)
-  - Returns: Paginated list of products
+- `GET /api/v1/products` - Lấy danh sách sản phẩm với tìm kiếm và filter (public)
+  - Query params:
+    - `keyword` (optional): Tìm kiếm theo tên sản phẩm (case-insensitive)
+    - `category` (optional): Lọc theo category ID
+    - `page` (default: 1): Số trang (bắt đầu từ 1)
+    - `limit` (default: 20, max: 100): Số sản phẩm mỗi trang
+  - Returns: Paginated list với metadata (total, page, limit, total_pages)
+  - Example: `/api/v1/products?keyword=iphone&category=1&page=1&limit=20`
 - `GET /api/v1/products/{id}` - Lấy chi tiết sản phẩm (public)
   - Returns: Product details with seller and category info
 - `POST /api/v1/products` - Tạo sản phẩm mới (seller only)
