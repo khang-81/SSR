@@ -7,7 +7,7 @@ from jose import JWTError
 
 from app.core.database import get_db
 from app.core.security import decode_token
-from app.models.user import User
+from app.models.user import User, UserRole
 from app.services.auth_service import get_user_by_email
 
 
@@ -60,3 +60,28 @@ async def get_current_user(
         )
     
     return user
+
+
+async def get_current_seller(
+    current_user: User = Depends(get_current_user)
+) -> User:
+    """
+    Dependency to get current authenticated seller.
+    Only users with role SELLER can access seller endpoints.
+    
+    Args:
+        current_user: Current authenticated user from get_current_user
+        
+    Returns:
+        Current authenticated seller
+        
+    Raises:
+        HTTPException: If user is not a seller
+    """
+    if current_user.role != UserRole.SELLER:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Only sellers can perform this action"
+        )
+    
+    return current_user

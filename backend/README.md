@@ -93,6 +93,21 @@ backend/
   - Requires: Authentication (JWT token in cookie)
   - Returns: Current user information
 
+### Products
+- `GET /api/v1/products` - Lấy danh sách sản phẩm (public)
+  - Query params: `skip`, `limit`, `category_id` (optional)
+  - Returns: Paginated list of products
+- `GET /api/v1/products/{id}` - Lấy chi tiết sản phẩm (public)
+  - Returns: Product details with seller and category info
+- `POST /api/v1/products` - Tạo sản phẩm mới (seller only)
+  - Requires: Authentication + Seller role
+  - Body: `{ "name": "...", "description": "...", "price": 100000, "stock": 10, "category_id": 1 }`
+- `PUT /api/v1/products/{id}` - Cập nhật sản phẩm (seller only, own products)
+  - Requires: Authentication + Seller role + Own product
+  - Body: Partial update fields
+- `DELETE /api/v1/products/{id}` - Xóa sản phẩm (seller only, own products)
+  - Requires: Authentication + Seller role + Own product
+
 ## Development
 
 ### Code Style
@@ -187,11 +202,28 @@ GET /api/v1/users/me
   - SameSite=Lax: Chống CSRF
   - Secure: Nên set `True` trong production (HTTPS)
 
+## Database Models
+
+### User
+- id, email, password_hash, role, created_at
+- Relationship: One seller has many products
+
+### Category
+- id, name
+- Relationship: One category has many products
+
+### Product
+- id, name, description, price, stock, seller_id, category_id, created_at, updated_at
+- Relationships:
+  - Belongs to User (seller)
+  - Belongs to Category
+
 ## Next Steps
 
-- [x] Setup database models (User)
-- [x] Implement authentication (Register)
+- [x] Setup database models (User, Category, Product)
+- [x] Implement authentication (Register, Login)
 - [x] Implement login (JWT + HttpOnly Cookie)
-- [ ] Create product endpoints
+- [x] Create product endpoints (CRUD)
+- [ ] Create cart endpoints
 - [ ] Create order endpoints
 - [ ] Add tests

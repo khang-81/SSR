@@ -2,6 +2,7 @@
 User model for authentication and authorization.
 """
 from sqlalchemy import Column, Integer, String, DateTime, Enum as SQLEnum
+from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 import enum
 
@@ -29,6 +30,9 @@ class User(Base):
     password_hash = Column(String(255), nullable=False)
     role = Column(SQLEnum(UserRole), nullable=False, default=UserRole.BUYER)
     created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+    
+    # Relationship: One seller has many products
+    products = relationship("Product", back_populates="seller", lazy="selectin")
     
     def __repr__(self):
         return f"<User(id={self.id}, email={self.email}, role={self.role})>"
