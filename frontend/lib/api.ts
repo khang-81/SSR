@@ -90,6 +90,123 @@ export const authApi = {
   },
 }
 
+// Cart API (via Next.js API routes)
+export const cartApi = {
+  get: async () => {
+    const response = await fetch('/api/cart', {
+      credentials: 'include',
+    })
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({ detail: 'Unknown error' }))
+      throw new Error(error.detail || `HTTP error! status: ${response.status}`)
+    }
+    return response.json()
+  },
+
+  add: async (productId: number, quantity: number) => {
+    const response = await fetch('/api/cart', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ product_id: productId, quantity }),
+      credentials: 'include',
+    })
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({ detail: 'Unknown error' }))
+      throw new Error(error.detail || `HTTP error! status: ${response.status}`)
+    }
+    return response.json()
+  },
+
+  update: async (cartItemId: number, quantity: number) => {
+    const response = await fetch(`/api/cart/${cartItemId}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ quantity }),
+      credentials: 'include',
+    })
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({ detail: 'Unknown error' }))
+      throw new Error(error.detail || `HTTP error! status: ${response.status}`)
+    }
+    return response.json()
+  },
+
+  remove: async (cartItemId: number) => {
+    const response = await fetch(`/api/cart/${cartItemId}`, {
+      method: 'DELETE',
+      credentials: 'include',
+    })
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({ detail: 'Unknown error' }))
+      throw new Error(error.detail || `HTTP error! status: ${response.status}`)
+    }
+  },
+}
+
+// Orders API (via Next.js API routes)
+export const ordersApi = {
+  list: async () => {
+    const response = await fetch('/api/orders', {
+      credentials: 'include',
+    })
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({ detail: 'Unknown error' }))
+      throw new Error(error.detail || `HTTP error! status: ${response.status}`)
+    }
+    return response.json()
+  },
+
+  create: async () => {
+    const response = await fetch('/api/orders', {
+      method: 'POST',
+      credentials: 'include',
+    })
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({ detail: 'Unknown error' }))
+      throw new Error(error.detail || `HTTP error! status: ${response.status}`)
+    }
+    return response.json()
+  },
+}
+
+// Types
+export interface CartItem {
+  id: number
+  user_id: number
+  product_id: number
+  quantity: number
+  product?: Product
+}
+
+export interface CartResponse {
+  items: CartItem[]
+  total_items: number
+}
+
+export interface OrderItem {
+  id: number
+  order_id: number
+  product_id: number
+  quantity: number
+  price: number
+  product?: Product
+}
+
+export interface Order {
+  id: number
+  user_id: number
+  total_price: number
+  status: string
+  created_at: string
+  updated_at: string
+  items?: OrderItem[]
+}
+
+export interface OrdersResponse {
+  orders: Order[]
+  total: number
+}
+
 // Types
 export interface Product {
   id: number

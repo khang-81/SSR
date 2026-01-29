@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation'
 import { productsApi, ProductDetail } from '@/lib/api'
 import Link from 'next/link'
+import AddToCartButton from '@/components/product/AddToCartButton'
 
 /**
  * Product Detail Page - Server-Side Rendered
@@ -94,14 +95,7 @@ export default async function ProductDetailPage({
           )}
 
           {/* Add to Cart Button */}
-          <div className="space-y-4">
-            <button className="btn-primary w-full py-3 text-lg">
-              Thêm Vào Giỏ Hàng
-            </button>
-            <button className="btn-secondary w-full py-3 text-lg">
-              Mua Ngay
-            </button>
-          </div>
+          <AddToCartButton productId={product.id} stock={product.stock} />
         </div>
       </div>
     </div>

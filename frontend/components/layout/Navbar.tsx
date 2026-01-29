@@ -8,7 +8,6 @@ export default function Navbar() {
 
   useEffect(() => {
     // Check if user is logged in (check for cookie)
-    // This is a simple check, in production you'd verify the JWT
     const checkAuth = async () => {
       try {
         const response = await fetch('/api/users/me', {
@@ -20,6 +19,10 @@ export default function Navbar() {
       }
     }
     checkAuth()
+    
+    // Refresh auth state when route changes
+    const interval = setInterval(checkAuth, 5000)
+    return () => clearInterval(interval)
   }, [])
 
   return (

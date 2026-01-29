@@ -63,12 +63,30 @@ frontend/
 ### Product Detail (`/products/[id]`)
 - Server-Side Rendered (SSR)
 - Hiển thị chi tiết sản phẩm
+- Add to Cart functionality
 - Fetch data từ FastAPI backend
+
+### Cart (`/cart`) - Protected
+- Server-Side Rendered (SSR)
+- Xem giỏ hàng
+- Cập nhật số lượng, xóa sản phẩm
+- Protected route (yêu cầu authentication)
+
+### Checkout (`/checkout`) - Protected
+- Server-Side Rendered (SSR)
+- Tạo đơn hàng từ giỏ hàng
+- Protected route (yêu cầu authentication)
+
+### Orders (`/orders`) - Protected
+- Server-Side Rendered (SSR)
+- Hiển thị danh sách đơn hàng
+- Protected route (yêu cầu authentication)
 
 ### Login (`/login`)
 - Client-side rendered
 - Form đăng nhập
 - JWT token được lưu trong HttpOnly cookie
+- Redirect về trang được yêu cầu sau khi login
 
 ### Register (`/register`)
 - Client-side rendered
@@ -87,6 +105,10 @@ Xem [SSR_GUIDE.md](./SSR_GUIDE.md) để hiểu cách SSR fetch data từ FastAP
 - ✅ TypeScript
 - ✅ API Integration với FastAPI
 - ✅ Authentication với JWT + HttpOnly Cookie
+- ✅ Cart Management (Add, Update, Remove)
+- ✅ Checkout Process
+- ✅ Order Management
+- ✅ Route Protection (Middleware + SSR)
 
 ## Build
 
@@ -95,8 +117,31 @@ npm run build
 npm start
 ```
 
+## Route Protection
+
+Routes được bảo vệ bằng 2 lớp:
+
+1. **Middleware**: Kiểm tra cookie và redirect đến login
+2. **SSR Protection**: Kiểm tra authentication trong Server Components
+
+Protected routes:
+- `/cart`
+- `/checkout`
+- `/orders`
+- `/profile`
+
+## API Routes
+
+Next.js API routes được sử dụng để proxy requests đến FastAPI:
+- `/api/cart` - Cart operations
+- `/api/orders` - Order operations
+- `/api/users/me` - Get current user
+
+Lý do: SSR cần forward cookies từ client request đến FastAPI.
+
 ## Lưu Ý
 
 - Backend FastAPI phải chạy trên `http://localhost:8000`
 - CORS đã được cấu hình để cho phép requests từ frontend
 - JWT token được lưu trong HttpOnly cookie tự động
+- Protected routes yêu cầu authentication
