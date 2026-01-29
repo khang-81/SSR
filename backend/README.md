@@ -127,6 +127,15 @@ backend/
 - `DELETE /api/v1/cart/{id}` - Xóa sản phẩm khỏi giỏ hàng
   - Requires: Authentication + Own cart item
 
+### Orders
+- `POST /api/v1/orders` - Đặt hàng từ giỏ hàng
+  - Requires: Authentication
+  - Process: Lấy từ cart → Trừ stock → Tạo order → Xóa cart
+  - Returns: Created order with items
+- `GET /api/v1/orders` - Lấy danh sách đơn hàng của user
+  - Requires: Authentication
+  - Returns: List of orders with items
+
 ## Development
 
 ### Code Style
@@ -244,6 +253,20 @@ GET /api/v1/users/me
   - Belongs to Product
 - Unique constraint: (user_id, product_id) - mỗi user chỉ có 1 cart item cho mỗi sản phẩm
 
+### Order
+- id, user_id, total_price, status, created_at, updated_at
+- Status: PENDING, PROCESSING, SHIPPED, DELIVERED, CANCELLED
+- Relationships:
+  - Belongs to User (Buyer)
+  - Has many OrderItems
+
+### OrderItem
+- id, order_id, product_id, quantity, price (snapshot)
+- Relationships:
+  - Belongs to Order
+  - References Product
+- Price: Lưu giá tại thời điểm đặt hàng (snapshot)
+
 ## Next Steps
 
 - [x] Setup database models (User, Category, Product)
@@ -251,5 +274,5 @@ GET /api/v1/users/me
 - [x] Implement login (JWT + HttpOnly Cookie)
 - [x] Create product endpoints (CRUD)
 - [x] Create cart endpoints (CRUD)
-- [ ] Create order endpoints
+- [x] Create order endpoints (Create from cart, List orders)
 - [ ] Add tests
