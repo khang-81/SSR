@@ -56,3 +56,17 @@ export async function requireAuth(cookies?: string): Promise<boolean> {
   const user = await getCurrentUser(cookies)
   return user !== null
 }
+
+/**
+ * Check if user is a seller (for SSR)
+ * 
+ * @param cookies - Cookie string from request headers
+ * @returns User object if seller, null otherwise
+ */
+export async function requireSeller(cookies?: string): Promise<User | null> {
+  const user = await getCurrentUser(cookies)
+  if (user && user.role === 'SELLER') {
+    return user
+  }
+  return null
+}

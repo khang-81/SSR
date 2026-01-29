@@ -82,6 +82,21 @@ frontend/
 - Hiển thị danh sách đơn hàng
 - Protected route (yêu cầu authentication)
 
+### Seller Dashboard (`/seller/dashboard`) - Protected
+- Server-Side Rendered (SSR)
+- Dashboard với thống kê sản phẩm
+- Protected route (yêu cầu Seller role)
+
+### Seller Products (`/seller/products`) - Protected
+- Server-Side Rendered (SSR)
+- Quản lý sản phẩm (list, create, edit, delete)
+- Protected route (yêu cầu Seller role)
+
+### Seller Orders (`/seller/orders`) - Protected
+- Server-Side Rendered (SSR)
+- Xem đơn hàng liên quan đến sản phẩm của shop
+- Protected route (yêu cầu Seller role)
+
 ### Login (`/login`)
 - Client-side rendered
 - Form đăng nhập
@@ -109,6 +124,9 @@ Xem [SSR_GUIDE.md](./SSR_GUIDE.md) để hiểu cách SSR fetch data từ FastAP
 - ✅ Checkout Process
 - ✅ Order Management
 - ✅ Route Protection (Middleware + SSR)
+- ✅ Seller Dashboard
+- ✅ Product Management (CRUD)
+- ✅ Seller Orders View
 
 ## Build
 
@@ -125,10 +143,10 @@ Routes được bảo vệ bằng 2 lớp:
 2. **SSR Protection**: Kiểm tra authentication trong Server Components
 
 Protected routes:
-- `/cart`
-- `/checkout`
-- `/orders`
-- `/profile`
+- `/cart` - Requires authentication
+- `/checkout` - Requires authentication
+- `/orders` - Requires authentication
+- `/seller/*` - Requires Seller role
 
 ## API Routes
 
@@ -136,6 +154,8 @@ Next.js API routes được sử dụng để proxy requests đến FastAPI:
 - `/api/cart` - Cart operations
 - `/api/orders` - Order operations
 - `/api/users/me` - Get current user
+- `/api/seller/products` - Seller product management
+- `/api/seller/orders` - Seller orders
 
 Lý do: SSR cần forward cookies từ client request đến FastAPI.
 

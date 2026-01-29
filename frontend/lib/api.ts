@@ -207,6 +207,87 @@ export interface OrdersResponse {
   total: number
 }
 
+// Seller API (via Next.js API routes)
+export const sellerApi = {
+  // Products
+  getMyProducts: async () => {
+    const response = await fetch('/api/seller/products', {
+      credentials: 'include',
+    })
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({ detail: 'Unknown error' }))
+      throw new Error(error.detail || `HTTP error! status: ${response.status}`)
+    }
+    const data = await response.json()
+    // Filter to only show seller's products
+    // In production, backend should have a dedicated endpoint
+    return data
+  },
+
+  createProduct: async (productData: {
+    name: string
+    description?: string
+    price: number
+    stock: number
+    category_id: number
+  }) => {
+    const response = await fetch('/api/seller/products', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(productData),
+      credentials: 'include',
+    })
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({ detail: 'Unknown error' }))
+      throw new Error(error.detail || `HTTP error! status: ${response.status}`)
+    }
+    return response.json()
+  },
+
+  updateProduct: async (productId: number, productData: {
+    name?: string
+    description?: string
+    price?: number
+    stock?: number
+    category_id?: number
+  }) => {
+    const response = await fetch(`/api/seller/products/${productId}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(productData),
+      credentials: 'include',
+    })
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({ detail: 'Unknown error' }))
+      throw new Error(error.detail || `HTTP error! status: ${response.status}`)
+    }
+    return response.json()
+  },
+
+  deleteProduct: async (productId: number) => {
+    const response = await fetch(`/api/seller/products/${productId}`, {
+      method: 'DELETE',
+      credentials: 'include',
+    })
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({ detail: 'Unknown error' }))
+      throw new Error(error.detail || `HTTP error! status: ${response.status}`)
+    }
+  },
+
+  // Orders
+  getMyOrders: async () => {
+    const response = await fetch('/api/seller/orders', {
+      credentials: 'include',
+    })
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({ detail: 'Unknown error' }))
+      throw new Error(error.detail || `HTTP error! status: ${response.status}`)
+    }
+    return response.json()
+  },
+}
+
 // Types
 export interface Product {
   id: number

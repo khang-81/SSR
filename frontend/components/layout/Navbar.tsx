@@ -63,6 +63,12 @@ export default function Navbar() {
                 >
                   Đơn Hàng
                 </Link>
+                <Link
+                  href="/seller/dashboard"
+                  className="text-gray-700 hover:text-primary-600 transition-colors duration-200 font-medium"
+                >
+                  Bán Hàng
+                </Link>
               </>
             )}
           </div>
