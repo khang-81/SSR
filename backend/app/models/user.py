@@ -33,6 +33,8 @@ class User(Base):
     
     # Relationship: One seller has many products
     products = relationship("Product", back_populates="seller", lazy="selectin")
+    # Relationship: One user has many cart items
+    cart_items = relationship("CartItem", back_populates="user", lazy="selectin")
     
     def __repr__(self):
         return f"<User(id={self.id}, email={self.email}, role={self.role})>"

@@ -113,6 +113,20 @@ backend/
 - `DELETE /api/v1/products/{id}` - Xóa sản phẩm (seller only, own products)
   - Requires: Authentication + Seller role + Own product
 
+### Cart
+- `POST /api/v1/cart` - Thêm sản phẩm vào giỏ hàng
+  - Requires: Authentication
+  - Body: `{ "product_id": 1, "quantity": 2 }`
+  - Nếu sản phẩm đã có trong giỏ, sẽ cộng thêm quantity
+- `GET /api/v1/cart` - Lấy giỏ hàng của user hiện tại
+  - Requires: Authentication
+  - Returns: Danh sách items trong giỏ hàng với thông tin sản phẩm
+- `PUT /api/v1/cart/{id}` - Cập nhật số lượng sản phẩm trong giỏ
+  - Requires: Authentication + Own cart item
+  - Body: `{ "quantity": 3 }`
+- `DELETE /api/v1/cart/{id}` - Xóa sản phẩm khỏi giỏ hàng
+  - Requires: Authentication + Own cart item
+
 ## Development
 
 ### Code Style
@@ -223,12 +237,19 @@ GET /api/v1/users/me
   - Belongs to User (seller)
   - Belongs to Category
 
+### CartItem
+- id, user_id, product_id, quantity
+- Relationships:
+  - Belongs to User
+  - Belongs to Product
+- Unique constraint: (user_id, product_id) - mỗi user chỉ có 1 cart item cho mỗi sản phẩm
+
 ## Next Steps
 
 - [x] Setup database models (User, Category, Product)
 - [x] Implement authentication (Register, Login)
 - [x] Implement login (JWT + HttpOnly Cookie)
 - [x] Create product endpoints (CRUD)
-- [ ] Create cart endpoints
+- [x] Create cart endpoints (CRUD)
 - [ ] Create order endpoints
 - [ ] Add tests

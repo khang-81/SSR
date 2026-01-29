@@ -7,7 +7,7 @@ from contextlib import asynccontextmanager
 
 from app.core.config import settings
 from app.core.database import init_db, close_db
-from app.routers import health, auth, users, products
+from app.routers import health, auth, users, products, cart
 
 
 @asynccontextmanager
@@ -51,6 +51,7 @@ app.include_router(health.router, prefix=settings.API_V1_PREFIX)
 app.include_router(auth.router, prefix=settings.API_V1_PREFIX)
 app.include_router(users.router, prefix=settings.API_V1_PREFIX)
 app.include_router(products.router, prefix=settings.API_V1_PREFIX)
+app.include_router(cart.router, prefix=settings.API_V1_PREFIX)
 
 
 @app.get("/")

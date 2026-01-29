@@ -10,7 +10,7 @@ from alembic import context
 
 # Import your models and Base
 from app.core.database import Base
-from app.models import User, Category, Product  # Import all models here for autogenerate
+from app.models import User, Category, Product, CartItem  # Import all models here for autogenerate
 from app.core.config import settings
 
 # this is the Alembic Config object, which provides
